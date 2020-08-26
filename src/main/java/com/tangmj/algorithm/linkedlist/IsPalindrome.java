@@ -1,5 +1,7 @@
 package com.tangmj.algorithm.linkedlist;
 
+import java.util.Stack;
+
 /**
  * @author tangmingjian
  * 回文链表
@@ -44,20 +46,134 @@ public class IsPalindrome {
             reverseSlow = reverseSlow.next;
             slow = slow.next;
         }
-
+        //todo 将翻转的数据恢复
         return true;
     }
+
+
+    //使用辅助空间栈1
+    public boolean isPalindrome1(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+
+        Stack<ListNode> stack = new Stack<>();
+        ListNode node = head;
+        while (node != null) {
+            stack.push(node);
+            node = node.next;
+        }
+        node = head;
+        while (!stack.isEmpty()) {
+            if (node.val != stack.pop().val) {
+                return false;
+            }
+            node = node.next;
+        }
+        return true;
+    }
+
+
+    //使用辅助空间栈2
+    public boolean isPalindrome2(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        Stack<ListNode> stack = new Stack<>();
+        ListNode node = slow.next;
+        while (node != null) {
+            stack.push(node);
+            node = node.next;
+        }
+        boolean res = true;
+        node = head;
+        while (!stack.isEmpty()) {
+            if (node.val != stack.pop().val) {
+                res = false;
+                break;
+            }
+            node = node.next;
+        }
+        return res;
+    }
+
+    //不使用额外空间
+    public boolean isPalindrome3(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        //把slow的后续节点翻转,slow.next=null
+        ListNode left = head;
+        ListNode right = slow.next;
+        slow.next = null;
+
+        ListNode pre = null, next = null;
+        while (right != null) {
+            next = right.next;
+            right.next = pre;
+
+            pre = right;
+            right = next;
+        }
+        right = pre;
+
+        ListNode helpR = right;//用来恢复数据
+        //开始对比
+        boolean res = true;
+        while (left != null) {
+            if (left.val != right.val) {
+                res = false;
+                break;
+            }
+            left = left.next;
+            right = right.next;
+        }
+
+        //恢复被翻转的数据
+        pre = null;
+        next = null;
+        while (helpR != null) {
+            next = helpR.next;
+            helpR.next = pre;
+
+            pre = helpR;
+            helpR = next;
+        }
+        slow.next = pre;
+        return res;
+    }
+
 
     public static void main(String[] args) {
         IsPalindrome isPalindrome = new IsPalindrome();
 
         ListNode head = ListNode.of("1,2");
-        boolean palindrome = isPalindrome.isPalindrome(head);
-        System.out.println(palindrome);
+//        System.out.println("方法0:" + isPalindrome.isPalindrome(head));
+        System.out.println("方法1:" + isPalindrome.isPalindrome1(head));
+        System.out.println("方法2:" + isPalindrome.isPalindrome2(head));
+        System.out.println("方法3:" + isPalindrome.isPalindrome3(head));
+
 
         head = ListNode.of("1,2,2,1");
-        palindrome = isPalindrome.isPalindrome(head);
-        System.out.println(palindrome);
+        System.out.println("------------------------------");
+//        System.out.println("方法0:" + isPalindrome.isPalindrome(head));
+        System.out.println("方法1:" + isPalindrome.isPalindrome1(head));
+        System.out.println("方法2:" + isPalindrome.isPalindrome2(head));
+        System.out.println("方法3:" + isPalindrome.isPalindrome3(head));
 
+        System.out.println(head);
     }
 }
