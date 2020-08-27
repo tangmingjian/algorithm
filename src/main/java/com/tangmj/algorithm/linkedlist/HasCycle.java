@@ -1,5 +1,8 @@
 package com.tangmj.algorithm.linkedlist;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author tangmingjian 2020-07-02 下午10:47
  * 环形链表
@@ -22,9 +25,27 @@ public class HasCycle {
         while (fast != null && fast.next != null) {
             fast = fast.next.next;
             slow = slow.next;
-            if(fast.val == slow.val){
+            if (fast.val == slow.val) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean hasCycle1(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        Set<ListNode> set = new HashSet<>();
+        ListNode curr = head;
+        while (curr != null) {
+            if (set.contains(curr)) {
+                return true;
+            }
+            //将每个节点注册到set中
+            set.add(curr);
+            ListNode next = curr.next;
+            curr = next;
         }
         return false;
     }
