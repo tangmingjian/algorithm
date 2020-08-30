@@ -6,7 +6,7 @@ package com.tangmj.algorithm.linkedlist;
  **/
 public class CycleNode {
 
-    public ListNode cycleNode(ListNode head) {
+    public static ListNode cycleNode(ListNode head) {
         if (head == null || head.next == null || head.next.next == null) {
             return null;
         }
